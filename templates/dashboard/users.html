@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+
+<!--side bar-->
+
+
+
+<div class="row">
+<!--    left side bar-->
+<!-- load the sidebar-->
+
+    {% include 'dashboard/sidebar.html' %}
+
+
+<!--    right side content-->
+    <div class="col-md-9">
+        {% if perms.auth.view_user %}
+        <h2>All Users</h2>
+        <a href="{% url 'add_user' %}" class="btn btn-dark text-light float-right mb-2">Add User</a>
+        <table class="table table-hover">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Fullname</th>
+      <th>Username</th>
+      <th>Email</th>
+      <th>Active</th>
+      <th>staff</th>
+      <th>superuser</th>
+      <th>Actions</th>
+
+
+    </tr>
+  </thead>
+  <tbody>
+  {% for i in users %}
+    <tr>
+      <th>{{forloop.counter}}</th>
+      <td>{{i.first_name}} {{i.last_name}}</td>
+      <td>{{i.username}}</td>
+      <td>{{i.email}}</td>
+        <td>{% if i.is_active %}<i class="fa-solid fa-check text-success"></i>{% else %}<i class="fa-solid fa-xmark text-danger"></i>{% endif %}</td>
+      <td>{% if i.is_staff %}<i class="fa-solid fa-check text-success"></i>{% else %}<i class="fa-solid fa-xmark text-danger"></i>{% endif %}</td>
+      <td>{% if i.is_superuser %}<i class="fa-solid fa-check text-success"></i>{% else %}<i class="fa-solid fa-xmark text-danger"></i>{% endif %}</td>
+
+
+      <td><a href="{% url 'edit_user' i.id %}"><i class="fa-solid fa-pen-to-square text-success"></i></a>
+          &nbsp;
+      <a href="{% url 'delete_user' i.id %}"> <i class="fa-solid fa-trash text-danger"></i></a>
+      </td>
+    </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% else %}
+        <h5>You do not have permission to view this page</h5>
+        {% endif %}
+    </div>
+
+</div>
+
+
+{% endblock %}

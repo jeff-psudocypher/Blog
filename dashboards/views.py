@@ -1,10 +1,10 @@
 from django.shortcuts import render,redirect,get_object_or_404
 from blogs.models import Category,Blog
 from django.contrib.auth.decorators import login_required
-from .forms import CategoryForm,BlogForm
+from .forms import CategoryForm,BlogForm,EditUserForm,AddUserForm
 from django.template.defaultfilters import slugify
 # Create your views here.
-
+from django.contrib.auth.models import User
 @login_required(login_url='login')
 def dashboard(request):
     category_count = Category.objects.all().count()
@@ -76,3 +76,33 @@ def delete_posts(request,pk):
     post=get_object_or_404(Blog,pk=pk)
     post.delete()
     return redirect('posts')
+
+def users(request):
+    users = User.objects.all()
+    return render(request,'dashboard/users.html',{'users':users})
+
+def add_user(request):
+    if(request.method=='POST'):
+        form = AddUserForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('users')
+        else:
+            print(form.errors)
+    form = AddUserForm()
+    return render(request,'dashboard/add_user.html',{'form':form})
+
+def edit_user(request,pk):
+    user = get_object_or_404(User,pk=pk)
+    if(request.method=='POST'):
+        form=EditUserForm(request.POST,instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('users')
+    form = EditUserForm(instance=user)
+    return render(request,'dashboard/edit_user.html',{'form':form,'user':user})
+
+def delete_user(request,pk):
+    user=get_object_or_404(User,pk=pk)
+    user.delete()
+    return redirect('users')
