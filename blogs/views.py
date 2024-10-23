@@ -34,7 +34,7 @@ def blogs(request,slug):
 
 def search(request):
     keyword = request.GET.get('keyword')
-    print(keyword)
+
     blogs=Blog.objects.filter(Q(blog_title__icontains=keyword)|Q(short_desc__icontains=keyword)|Q(blog_body__icontains=keyword))
     # print(blogs)
     return render(request,'search.html',{'blogs':blogs,'keyword':keyword})

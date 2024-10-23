@@ -9,16 +9,17 @@ def home(request):
     featured_post=Blog.objects.filter(is_featured=True,status='Published').order_by('updated_at')
     posts=Blog.objects.filter(is_featured=False,status='Published')
     about = About.objects.all()
-    print(about)
+
     return render(request,'home.html',{'featured_post':featured_post,'posts':posts,'about':about})
 
 def register(request):
     form = RegistrationForm()
     if(request.method=='POST'):
         form=RegistrationForm(request.POST)
+        print(form)
         if form.is_valid():
             form.save()
-            return redirect('register')
+            return redirect('login')
         else:
             print(form.errors)
     else:
@@ -32,7 +33,7 @@ def login(request):
             password = form.cleaned_data['password']
 
             user = auth.authenticate(username=username, password=password)
-            print(user)
+
             if user is not None:
                 auth.login(request, user)
             return redirect('dashboard')
